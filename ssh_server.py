@@ -19,6 +19,7 @@ class Server (paramiko.ServerInterface):
     def check_auth_password(self, username, password):
         if (username == 'tim') and (password == 'seckret'):
             return paramiko.AUTH_SUCCESSFUL
+
 if __name__ == '__main__':
     server = '192.168.1.207'
     ssh_port = 2222
