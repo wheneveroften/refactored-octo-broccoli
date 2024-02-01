@@ -1,2 +1,2 @@
-#Projec for everyone.
+#Project for everyone.
 Give idea.
