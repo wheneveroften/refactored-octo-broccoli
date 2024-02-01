@@ -18,51 +18,51 @@ class Server (paramiko.ServerInterface):
 
     def check_auth_password(self, username, password):
         if (username == 'tim') and (password == 'seckret'):
-            if __name__ == '__main__':
-                server = '192.168.1.207'
-                ssh_port = 2222
-                try:
-                    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    sock.setsockopt(socket.SQL_SOCKET, socket.SO_RCVBUFREUSEADDR, 1)
-                    sock.bind((server, ssh_port))
-                    sock.listen(100)
-                    print('[+]Nasłuchiwanie połączenia...   ')
-                    client, addr = sock.accept()
-                except Exception as e:
-                    print('[-] Problem z nasłuchiwaniem :' + str(e))
-                    sys.exit(1)
-                else:
-                    print(f'[+] Odebrane połączenie od {addr}')
+            return paramiko.AUTH_SUCCESSFUL
+if __name__ == '__main__':
+    server = '192.168.1.207'
+    ssh_port = 2222
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.setsockopt(socket.SQL_SOCKET, socket.SO_RCVBUFREUSEADDR, 1)
+        sock.bind((server, ssh_port))
+        sock.listen(100)
+        print('[+]Nasłuchiwanie połączenia...   ')
+        client, addr = sock.accept()
+    except Exception as e:
+        print('[-] Problem z nasłuchiwaniem :' + str(e))
+        sys.exit(1)
+    else:
+        print(f'[+] Odebrane połączenie od {addr}')
 
+    bhSession = paramiko.Trasport(client)
+    bhSession.add_server_key(HOSTKEY)
+    server = Server()
+    bhSession.start_server(server = server)
 
-            bhSession = paramiko.Trasport(client)
-            bhSession.add_server_key(HOSTKEY)
-            server = Server()
-            bhSession.start_server(server = server)
+    chan = bhSession.accept(20)
+    if chan is None:
+        print('***Brak kanału.')
+        sys.exit()
 
-            chan = bhSession.accept(20)
-            if chan is None:
-                print('***Brak kanału.')
-                sys.exit()
+    print('[+] Uwierzytenienony !!')
+    print(chan.recv(1024).decode())
+    chan.send('Witaj w bh_ssh')
+    try:
+        while True:
+            command = input("Podaj polecenie : ")
+            if command != 'exit':
+                chan.send(command)
+                r = chan.recv(8192)
+                print(r.decode())
+            else:
+                chan.send('exit')
+                print('Koniec')
+                bhSession.close()
+                break
 
-        print('[+] Uwierzytenienony !!')
-        print(chan.recv(1024).decode())
-        chan.send('Witaj w bh_ssh')
-        try:
-            while True:
-                command = input("Podaj polecenie : ")
-                if command != 'exit':
-                    chan.send(command)
-                    r = chan.recv(8192)
-                    print(r.decode())
-                else:
-                    chan.send('exit')
-                    print('Koniec')
-                    bhSession.close()
-                    break
-
-        except KeyboardInterrupt:
-            bhSession.close()
+    except KeyboardInterrupt:
+        bhSession.close()
 
 
 
