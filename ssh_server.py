@@ -31,8 +31,8 @@ class Server (paramiko.ServerInterface):
                 except Exception as e:
                     print('[-] Problem z nasłuchiwaniem :' + str(e))
                     sys.exit(1)
-            else:
-                print(f'[+] Odebrane połączenie od {addr}')
+                else:
+                    print(f'[+] Odebrane połączenie od {addr}')
 
 
             bhSession = paramiko.Trasport(client)
