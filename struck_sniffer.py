@@ -71,18 +71,18 @@ class Scanner:
 
 def sniff(host):
         #Kod podany do poprzedniego przykładu powinen wyglądać znajomo
-        #if os.name == 'nt':
-        #    socket_protocol = socket.IPPROTO_IP
-        #else:
+        if os.name == 'nt':
+            socket_protocol = socket.IPPROTO_IP
+        else:
             socket_protocol = socket.IPPROTO_ICMP
 
 
-        #sniffer = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket_protocol)
-        #sniffer.bind((host, 0))
-        #sniffer.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, 1)
+        sniffer = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket_protocol)
+        sniffer.bind((host, 0))
+        sniffer.setsockopt(socket.IPPROTO_IP, socket.IP_HDRINCL, 1)
 
-        #if os.name == 'nt':
-        #    sniffer.ioctl(socket.SIO_RCVALL, socket.RCVALL_ON)
+        if os.name == 'nt':
+            sniffer.ioctl(socket.SIO_RCVALL, socket.RCVALL_ON)
 
         try:
             while True:
